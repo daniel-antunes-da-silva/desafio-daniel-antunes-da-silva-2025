@@ -28,4 +28,62 @@ describe('Abrigo de Animais', () => {
       expect(resultado.lista.length).toBe(4);
       expect(resultado.erro).toBeFalsy();
   });
+
+  test('Gato não divide brinquedos', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas('BOLA,LASER',
+      'CAIXA,NOVELO', 'Fofo,Mimi,Zero,Rex');
+
+       expect(resultado.lista[0]).toBe('Fofo - abrigo');
+       expect(resultado.lista[1]).toBe('Mimi - pessoa 1');
+       expect(resultado.lista[2]).toBe('Rex - abrigo');
+       expect(resultado.lista[3]).toBe('Zero - abrigo');
+       expect(resultado.lista.length).toBe(4);
+       expect(resultado.erro).toBeFalsy();
+  });
+
+  
+  test('Deve bloquear adoção de gato se compartilhar brinquedo com cão já adotado', () => {
+    const resultado = new AbrigoAnimais().encontraPessoas(
+      'RATO,BOLA',
+      'BOLA,NOVELO',
+    'Rex,Zero'
+  );
+  
+  expect(resultado.lista[0]).toBe('Rex - pessoa 1');
+  expect(resultado.lista[1]).toBe('Zero - abrigo');
+  expect(resultado.erro).toBeFalsy();
+});
+
+test('Deve bloquear a adoção de um cão se ele compartilhar brinquedo com um gato já adotado', () => {
+  const resultado = new AbrigoAnimais().encontraPessoas(
+    'BOLA,LASER,RATO',
+    'CAIXA,NOVELO',
+    'Mimi,Rex'
+  );
+
+  expect(resultado.lista).toEqual(['Mimi - pessoa 1', 'Rex - abrigo']);
+  expect(resultado.erro).toBeFalsy();
+});
+
+test('Deve permitir a adoção de múltiplos animais se o gato não compartilhar brinquedos', () => {
+  const resultado = new AbrigoAnimais().encontraPessoas(
+    'BOLA,LASER,CAIXA,NOVELO',
+    'SKATE',
+    'Mimi,Bola'
+  );
+  
+  expect(resultado.lista).toEqual(['Bola - pessoa 1', 'Mimi - pessoa 1']);
+  expect(resultado.erro).toBeFalsy();
+});
+
+// test('Loco não se importa com ordem desde que tenha companhia', () => {
+// const resultado = new AbrigoAnimais().encontraPessoas(
+//   'RATO,SKATE', 'SKATE,RATO', 'Loco,Rex');
+  
+//   expect(resultado.lista[0]).toBe('Loco - abrigo'); 
+//   expect(resultado.lista[1]).toBe('Rex - abrigo');
+//   expect(resultado.lista.length).toBe(2);
+//   expect(resultado.erro).toBeFalsy();
+// });
+
 });
