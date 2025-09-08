@@ -12,82 +12,68 @@ class AbrigoAnimais {
 			return {erro: 'Animal inválido'};
 		}
 
-		ordemAnimais = ordemAnimais.split(',')
-		console.log(ordemAnimais)
-		let resultadoAdocao = []
-		let animaisAdotadosPessoa1 = [];
-		let animaisAdotadosPessoa2 = [];
-
-		for (const animalAtual of ordemAnimais) {
-			let brinquedosAnimal;
-
-			for (const animalOriginal of animais) {
-				if (animalAtual === animalOriginal.nome) {
-					brinquedosAnimal = animalOriginal.brinquedos.split(',')
-					console.log("Brinquedos do animal original: " + brinquedosAnimal)
-					const listaBrinquedosPessoa1 = brinquedosPessoa1.split(',');
-					const listaBrinquedosPessoa2 = brinquedosPessoa2.split(',');
-					let brinquedosValidosPessoa1 = [];
-					let brinquedosValidosPessoa2 = [];
-			
-					for (const brinquedoAnimal of brinquedosAnimal) {
-						for (const brinquedoPessoa1 of listaBrinquedosPessoa1) {
-							if (brinquedoPessoa1 === brinquedoAnimal) {
-								brinquedosValidosPessoa1.push(brinquedoPessoa1)
-							}
-						}
-						for (const brinquedoPessoa2 of listaBrinquedosPessoa2) {
-							if (brinquedoPessoa2 === brinquedoAnimal) {
-								brinquedosValidosPessoa2.push(brinquedoPessoa2)
-							}
-						}
-							// git push -u origin main
-					}
-			
-					brinquedosValidosPessoa1 = brinquedosValidosPessoa1.join(',')
-					console.log("Brinquedos da pessoa 1: " + brinquedosValidosPessoa1)
-					brinquedosValidosPessoa2 = brinquedosValidosPessoa2.join(',')
-					console.log("Brinquedos da pessoa 2: " + brinquedosValidosPessoa2)
-
-					if (animalOriginal.brinquedos === brinquedosValidosPessoa1 && animalOriginal.brinquedos === brinquedosValidosPessoa2) {
-						resultadoAdocao.push(animalOriginal.nome + " - " + this.ABRIGO)
-					} else if (animalOriginal.brinquedos === brinquedosValidosPessoa1) {
-						resultadoAdocao.push(animalOriginal.nome + " - " + this.PESSOA_1)
-					} else if (animalOriginal.brinquedos === brinquedosValidosPessoa2) {
-						resultadoAdocao.push(animalOriginal.nome + " - " + this.PESSOA_2)
-					} else {
-						resultadoAdocao.push(animalOriginal.nome + " - " + this.ABRIGO)
-					}
-				}
-			}
+		resultadoBrinquedos = this.validarBrinquedos(brinquedosPessoa1, brinquedosPessoa2)
+		if (!resultadoBrinquedos.valido) {
+			return {erro: 'Brinquedo inválido'};
 		}
 
-		return resultadoAdocao
+		const brinquedosPessoas = resultadoBrinquedos.brinquedosPessoas
+
 
 	}
+
 
 	validarAnimal(ordemAnimais) {
 		let listaAnimais = ordemAnimais.split(',');
 		const totalNomesAnimais = animais.map(animal => animal.nome);
 		listaAnimais.sort();
 		let animaisUnicos = [];
+
 		for (let animal of listaAnimais) {
 			animal = animal.trim();
 			if (animaisUnicos.includes(animal)) {
 				return false;
 			}
+
 			if (!totalNomesAnimais.includes(animal)) {
 				return false;
 			}
+
 			animaisUnicos.push(animal);
 		}
 		return true;
-  }
+  	}
+
+	validarBrinquedos(brinquedosPessoa1, brinquedosPessoa2) {
+		const brinquedosPessoas = [brinquedosPessoa1.split(','), brinquedosPessoa2.split(',')]
+		let brinquedosValidos = new Set();
+
+		for (const animal of animais) {
+			animal.brinquedos.forEach((brinquedo) => brinquedosValidos.add(brinquedo));
+		}
+
+		for (const brinquedoPessoa of brinquedosPessoas) {
+			let duplicados = new Set();
+
+			for (const brinquedo of brinquedoPessoa) {
+				if (duplicados.has(brinquedo) || !brinquedosValidos.has(brinquedo)) {
+					return false
+				} else {
+					duplicados.add(brinquedo)
+				}
+			}
+
+		}
+		console.log('------------------------')
+		return {brinquedos: brinquedosPessoas, valido: true};
+	}
 }
 
-const resultado = new AbrigoAnimais().encontraPessoas('BOLA,LASER', 
+// const resultado = new AbrigoAnimais().validarBrinquedos('BOLA,LASER', 'BOLA,NOVELO,RATO,LASER')
+const resultado2 = new AbrigoAnimais().encontraPessoas('BOLA,LASER', 
 	'BOLA,NOVELO,RATO,LASER', 'Mimi,Fofo,Rex,Bola')
 
-console.log(resultado)
+// console.log(resultado)
+console.log(resultado2)
 
 export { AbrigoAnimais as AbrigoAnimais };
