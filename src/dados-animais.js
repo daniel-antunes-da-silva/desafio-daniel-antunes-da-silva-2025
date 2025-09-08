@@ -1,4 +1,3 @@
-// ...existing code...
 const animais = [
   {
     "nome": "Rex",
