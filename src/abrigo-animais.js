@@ -39,10 +39,6 @@ class AbrigoAnimais {
 					} else if (brinquedosTempPessoa1 === brinquedosAnimal) {
 						const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_1], animal.tipo, animal.brinquedos)
 						if (valido) {
-							adotados[this.PESSOA_1].push({
-								tipo: animal.tipo,
-								brinquedos: animal.brinquedos
-							});
 							resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_1}`)
 						} else {
 							resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
@@ -50,10 +46,6 @@ class AbrigoAnimais {
 					} else if (brinquedosTempPessoa2 === brinquedosAnimal) {
 						const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_2], animal.tipo, animal.brinquedos)
 						if (valido) {
-							adotados[this.PESSOA_2].push({
-								tipo: animal.tipo,
-								brinquedos: animal.brinquedos
-							});
 							resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_2}`)
 						} else {
 							resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
@@ -85,6 +77,10 @@ class AbrigoAnimais {
 		} else if (brinquedoExistente.includes(true) && tipoNovoAnimal == "gato") {
 			return false;
 		} else {
+			adotados.push({
+				tipo: tipoNovoAnimal,
+				brinquedos: brinquedosNovoAnimal
+			});
 			return true;
 		}
 	}
