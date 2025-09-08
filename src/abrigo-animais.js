@@ -20,31 +20,74 @@ class AbrigoAnimais {
 
 		brinquedosPessoa1 = brinquedosPessoa1.split(',')
 		brinquedosPessoa2 = brinquedosPessoa2.split(',')
-		console.log("Brinquedos Pessoa 1: ", brinquedosPessoa1)
-		console.log("Brinquedos Pessoa 2: ", brinquedosPessoa2)
+		const nomesRecebidos = ordemAnimais.split(',').sort();
+		let resultadoAdocao = []
+		let adotados = {
+			"pessoa 1": [],
+			"pessoa 2": []
+		}
 
-		const nomesRecebidos = ordemAnimais.split(','); // .sort()
-
-
-		// Itera sobre os nomes de animais recebidos
 		for (const nomeRecebido of nomesRecebidos) {
-			// Itera sobre a lista de animais totais
 			for (const animal of animais) {
-				// Verifica se o nome recebido é igual ao nome do animal da lista total. 
 				if (animal.nome === nomeRecebido) {
-					let brinquedosTempPessoa1 = brinquedosPessoa1.filter(brinquedo => animal.brinquedos.includes(brinquedo));
-					let brinquedosTempPessoa2 = brinquedosPessoa2.filter(brinquedo => animal.brinquedos.includes(brinquedo));
-					if (brinquedosTempPessoa1.join(',') === animal.brinquedos.join(',')) {
-						console.log("Pessoa 1");
-					} else if (brinquedosTempPessoa2.join(',') === animal.brinquedos.join(',')) {
-						console.log("Pessoa 2");
+					let brinquedosTempPessoa1 = brinquedosPessoa1.filter(brinquedo => animal.brinquedos.includes(brinquedo)).join(',');
+					let brinquedosTempPessoa2 = brinquedosPessoa2.filter(brinquedo => animal.brinquedos.includes(brinquedo)).join(',');
+					let brinquedosAnimal = animal.brinquedos.join(',')
+
+					if (brinquedosTempPessoa1 === brinquedosAnimal && brinquedosTempPessoa2 === brinquedosAnimal) {
+						resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
+					} else if (brinquedosTempPessoa1 === brinquedosAnimal) {
+						const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_1], animal.tipo, animal.brinquedos)
+						if (valido) {
+							adotados[this.PESSOA_1].push({
+								tipo: animal.tipo,
+								brinquedos: animal.brinquedos
+							});
+							resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_1}`)
+						} else {
+							resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
+						}
+					} else if (brinquedosTempPessoa2 === brinquedosAnimal) {
+						const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_2], animal.tipo, animal.brinquedos)
+						if (valido) {
+							adotados[this.PESSOA_2].push({
+								tipo: animal.tipo,
+								brinquedos: animal.brinquedos
+							});
+							resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_2}`)
+						} else {
+							resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
+						}
+					} else {
+						resultadoAdocao.push(`${animal.nome} - ${this.ABRIGO}`)
 					}
+					console.log(adotados)
+					// para não percorrer o restante da lista de animais, pois o nome recebido já foi encontrado.
+					break;
 				}
 			}
 		}
-
+		console.log(resultadoAdocao)
+		return {lista: resultadoAdocao}
 	}
 
+	verificarConflitoAdocao(adotados, tipoNovoAnimal, brinquedosNovoAnimal) {
+		let brinquedoExistente = [];
+		let gatoExistente = [];
+		for (const brinquedo of brinquedosNovoAnimal) {
+			brinquedoExistente.push(adotados.some(item => item.brinquedos.includes(brinquedo)));
+			gatoExistente.push(adotados.some(item => item.tipo.includes("gato")));
+			console.log(brinquedoExistente)
+			console.log(gatoExistente)
+		}
+		if (gatoExistente.includes(true) && brinquedoExistente.includes(true)) {
+			return false;
+		} else if (brinquedoExistente.includes(true) && tipoNovoAnimal == "gato") {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 	validarAnimal(ordemAnimais) {
 		let listaAnimais = ordemAnimais.split(',');
@@ -66,6 +109,9 @@ class AbrigoAnimais {
 	}
 
 	validarBrinquedos(brinquedosPessoa1, brinquedosPessoa2) {
+		if (!brinquedosPessoa1 || !brinquedosPessoa2) {
+			return {valido: false}
+		}
 		const brinquedosPessoas = [brinquedosPessoa1.split(','), brinquedosPessoa2.split(',')]
 		let brinquedosValidos = new Set();
 
@@ -77,22 +123,15 @@ class AbrigoAnimais {
 			let duplicados = new Set();
 			for (const brinquedo of brinquedoPessoa) {
 				if (duplicados.has(brinquedo) || !brinquedosValidos.has(brinquedo)) {
-					return false
+					return {valido: false}
 				} else {
 					duplicados.add(brinquedo)
 				}
 			}
-
 		}
 		return { brinquedos: brinquedosPessoas, valido: true };
 	}
 }
 
-// const resultado = new AbrigoAnimais().validarBrinquedos('BOLA,LASER', 'BOLA,NOVELO,RATO,LASER')
-const resultado2 = new AbrigoAnimais().encontraPessoas('BOLA,LASER',
-	'BOLA,NOVELO,RATO,LASER', 'Mimi,Fofo,Rex,Bola')
-
-// console.log(resultado)
-// console.log(resultado2)
 
 export { AbrigoAnimais as AbrigoAnimais };
