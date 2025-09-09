@@ -1,4 +1,4 @@
-import { animais } from "./dados-animais.js"
+import { animais } from "./dados-animais.js";
 
 class AbrigoAnimais {
 	constructor() {
@@ -8,6 +8,13 @@ class AbrigoAnimais {
 		this.MAX_ADOCOES = 3;
 	}
 
+	/**
+	 * Encontra as pessoas adequadas para adotar cada animal
+	 * @param {string} brinquedosPessoa1 - Brinquedos da primeira pessoa separados por vírgula
+	 * @param {string} brinquedosPessoa2 - Brinquedos da segunda pessoa separados por vírgula
+	 * @param {string} ordemAnimais - Lista de animais na ordem desejada e separados por vírgula
+	 * @returns {object} Resultado da adoção com lista ou erro
+	 */
 	encontraPessoas(brinquedosPessoa1, brinquedosPessoa2, ordemAnimais) {
 		if (!this.validarAnimal(ordemAnimais)) {
 			return { erro: 'Animal inválido' };
@@ -93,6 +100,14 @@ class AbrigoAnimais {
 		return {lista: resultadoAdocao.sort()};
 	}
 
+	/**
+	 * Verifica se há conflito entre gatos e outros animais com brinquedos compartilhados
+	 * Se não há conflito, adiciona o animal à lista de adotados recebida como argumento
+	 * @param {Array} adotados - Lista de animais já adotados pela pessoa
+	 * @param {string} tipoNovoAnimal - Tipo do animal a ser adotado
+	 * @param {Array} brinquedosNovoAnimal - Lista de brinquedos do novo animal
+	 * @returns {boolean} True se não há conflito e se o animal foi adicionado, false caso contrário
+	 */
 	verificarConflitoAdocao(adotados, tipoNovoAnimal, brinquedosNovoAnimal) {
 		let brinquedoExistente = [];
 		let gatoExistente = [];
@@ -117,6 +132,11 @@ class AbrigoAnimais {
 		}
 	}
 
+	/**
+	 * Valida se os animais são válidos e únicos
+	 * @param {string} ordemAnimais - Lista de animais separados por vírgula
+	 * @returns {boolean} True se todos os animais são válidos e únicos
+	 */
 	validarAnimal(ordemAnimais) {
 		let listaAnimais = ordemAnimais.split(',');
 		const totalNomesAnimais = animais.map(animal => animal.nome);
@@ -133,6 +153,12 @@ class AbrigoAnimais {
 		return true;
 	}
 
+	/**
+	 * Valida se os brinquedos são válidos e únicos por pessoa
+	 * @param {string} brinquedosPessoa1 - Lista de brinquedos da primeira pessoa
+	 * @param {string} brinquedosPessoa2 - Lista de brinquedos da segunda pessoa
+	 * @returns {object} Objeto com validação e lista de brinquedos processados
+	 */
 	validarBrinquedos(brinquedosPessoa1, brinquedosPessoa2) {
 		if (!brinquedosPessoa1 || !brinquedosPessoa2) {
 			return {valido: false};
@@ -161,6 +187,5 @@ class AbrigoAnimais {
 		return { brinquedos: brinquedosPessoas, valido: true };
 	}
 }
-
 
 export { AbrigoAnimais as AbrigoAnimais };
