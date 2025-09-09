@@ -36,12 +36,18 @@ class AbrigoAnimais {
 				if (animal.nome === nomeRecebido) {
 					let brinquedosAnimal = animal.brinquedos.join(',');
 
-					if (nomeRecebido == "Loco") {
-						validoPessoa1 = animal.brinquedos.every(brinquedo => brinquedosPessoa1.includes(brinquedo)) && adotados[this.PESSOA_1].length > 0;
-						validoPessoa2 = animal.brinquedos.every(brinquedo => brinquedosPessoa2.includes(brinquedo)) && adotados[this.PESSOA_2].length > 0;
+					if (nomeRecebido === "Loco") {
+						validoPessoa1 = animal.brinquedos.every(brinquedo => brinquedosPessoa1.includes(brinquedo)) && 
+							adotados[this.PESSOA_1].length > 0;
+						validoPessoa2 = animal.brinquedos.every(brinquedo => brinquedosPessoa2.includes(brinquedo)) && 
+							adotados[this.PESSOA_2].length > 0;
 					} else {
-						validoPessoa1 = brinquedosPessoa1.filter(brinquedo => animal.brinquedos.includes(brinquedo)).join(',') === brinquedosAnimal; 
-						validoPessoa2 = brinquedosPessoa2.filter(brinquedo => animal.brinquedos.includes(brinquedo)).join(',') === brinquedosAnimal;
+						validoPessoa1 = brinquedosPessoa1
+							.filter(brinquedo => animal.brinquedos.includes(brinquedo))
+							.join(',') === brinquedosAnimal; 
+						validoPessoa2 = brinquedosPessoa2
+							.filter(brinquedo => animal.brinquedos.includes(brinquedo))
+							.join(',') === brinquedosAnimal;
 					}
 
 					if (validoPessoa1 && validoPessoa2) {
@@ -49,7 +55,11 @@ class AbrigoAnimais {
 
 					} else if (validoPessoa1) {
 						if (adotados[this.PESSOA_1].length < this.MAX_ADOCOES) {
-							const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_1], animal.tipo, animal.brinquedos);
+							const valido = this.verificarConflitoAdocao(
+								adotados[this.PESSOA_1], 
+								animal.tipo, 
+								animal.brinquedos
+							);
 							if (valido) {
 								resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_1}`);
 								break;
@@ -59,7 +69,11 @@ class AbrigoAnimais {
 
 					} else if (validoPessoa2) {
 						if (adotados[this.PESSOA_2].length < this.MAX_ADOCOES) {
-							const valido = this.verificarConflitoAdocao(adotados[this.PESSOA_2], animal.tipo, animal.brinquedos);
+							const valido = this.verificarConflitoAdocao(
+								adotados[this.PESSOA_2], 
+								animal.tipo, 
+								animal.brinquedos
+							);
 							if (valido) {
 								resultadoAdocao.push(`${animal.nome} - ${this.PESSOA_2}`);
 								break;
@@ -82,15 +96,17 @@ class AbrigoAnimais {
 	verificarConflitoAdocao(adotados, tipoNovoAnimal, brinquedosNovoAnimal) {
 		let brinquedoExistente = [];
 		let gatoExistente = [];
+
 		for (const brinquedo of brinquedosNovoAnimal) {
 			brinquedoExistente.push(adotados.some(item => item.brinquedos.includes(brinquedo)));
 			gatoExistente.push(adotados.some(item => item.tipo.includes("gato")));
 			console.log(brinquedoExistente);
 			console.log(gatoExistente);
 		}
+
 		if (gatoExistente.includes(true) && brinquedoExistente.includes(true)) {
 			return false;
-		} else if (brinquedoExistente.includes(true) && tipoNovoAnimal == "gato") {
+		} else if (brinquedoExistente.includes(true) && tipoNovoAnimal === "gato") {
 			return false;
 		} else {
 			adotados.push({
@@ -121,7 +137,11 @@ class AbrigoAnimais {
 		if (!brinquedosPessoa1 || !brinquedosPessoa2) {
 			return {valido: false};
 		}
-		const brinquedosPessoas = [brinquedosPessoa1.split(','), brinquedosPessoa2.split(',')];
+		
+		const brinquedosPessoas = [
+			brinquedosPessoa1.split(','), 
+			brinquedosPessoa2.split(',')
+		];
 		let brinquedosValidos = new Set();
 
 		for (const animal of animais) {
